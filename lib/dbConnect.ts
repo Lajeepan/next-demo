@@ -19,9 +19,20 @@ const DBconnect =async () => {
   }
 
 
+  try {
+    mongoose.connect(MONGO_URI!,{
+      dbName: 'NextJSAPI',
+      bufferCommands: true,
+    });
+  } catch (error:any) {
+    console.log('MONGODB connection error:' , error);
+    throw new Error('MongoDB connection error' , error);
 
+  }
 
 
 
 
 }
+
+export default DBconnect;
