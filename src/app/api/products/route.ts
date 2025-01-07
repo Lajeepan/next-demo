@@ -1,32 +1,37 @@
-// src/app/api/products/route.ts
+import { NextApiRequest, NextApiResponse } from 'next';
+import Product from '../../../../lib/models/Product'; // Import the Product model
 
-import { NextResponse } from 'next/server';
-import dbConnect from '../../../../lib/dbConnect';
-import Product from '../../../../lib/models/Product';
+// Product API Routes
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { method } = req;
 
-export async function GET() {
-  await dbConnect();
-  
-  try {
-    const products = await Product.find({});
-    return NextResponse.json({ success: true, data: products });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-  }
-}
-
-
-// src/app/api/products/route.ts
-
-export async function POST(request: Request) {
-    await dbConnect();
-  
+  // Create new product
+  if (method === 'POST') {
     try {
-      const body = await request.json();
-      const product = await Product.create(body);
-      return NextResponse.json({ success: true, data: product }, { status: 201 });
-    } catch (error: any) {
-      return NextResponse.json({ success: false, message: error.message }, { status: 400 });
+      const { name, price, description } = req.body;
+      const newProduct = new Product({ name, price, description });
+      await newProduct.save();
+      return res.status(201).json(newProduct);
+    } catch (error) {
+      console.error('Error creating product:', error);
+      return res.status(500).json({ message: 'Server error' });
     }
   }
-  
+
+  // Get all products
+  if (method === 'GET') {
+    try {
+      const products = await Product.find();
+      if (!products.length) {
+        return res.status(404).json({ message: 'No products found' });
+      }
+      return res.status(200).json(products);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      return res.status(500).json({ message: 'Server error' });
+    }
+  }
+
+  // Handle unsupported methods
+  res.status(405).json({ message: 'Method Not Allowed' });
+}
