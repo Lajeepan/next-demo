@@ -1,28 +1,15 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, model, models } from "mongoose";
 
-export interface IProduct extends Document {
-  name: string;
-  price: number;
-  description: string;
-
-}
-
-const ProductSchema: Schema = new Schema<IProduct>({
-  name: {
-    type: String,
-    required: [true, 'Please provide a product name'],
+const ProductSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    description: { type: String },
+    price: { type: Number, required: true },
   },
-  price: {
-    type: Number,
-    required: [true, 'Please provide a product price'],
-  },
-  description: {
-    type: String,
-    required: [true, 'Please provide a product description'],
-  },
- 
-});
+  { timestamps: true }
+);
 
-const Product: Model<IProduct> = mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
+// Avoid recompiling the model if it already exists
+const Product = models.Product || model("Product", ProductSchema);
 
 export default Product;
