@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Product from '../../../../lib/models/Product'; // Import the Product model
+import DBconnect from '../../../../lib/db';
 
 // Product API Routes
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

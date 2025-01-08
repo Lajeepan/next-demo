@@ -4,7 +4,7 @@ export interface IProduct extends Document {
   name: string;
   price: number;
   description: string;
-  createdAt?: Date;
+
 }
 
 const ProductSchema: Schema = new Schema<IProduct>({
@@ -20,10 +20,7 @@ const ProductSchema: Schema = new Schema<IProduct>({
     type: String,
     required: [true, 'Please provide a product description'],
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+ 
 });
 
 const Product: Model<IProduct> = mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
